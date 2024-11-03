@@ -1,0 +1,18 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+
+# Environnement
+.env
+
+# Dossiers de build (si tu utilises par exemple un bundler)
+dist/
+build/
+
+# IDE files (par exemple pour WebStorm, VS Code, etc.)
+.idea/
+.vscode/
+.DS_Store
