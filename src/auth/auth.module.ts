@@ -1,9 +1,22 @@
-import {Module} from "@nestjs/common";
-import {AuthController} from "./auth.controller";
-import {AuthService} from "./auth.service";
+import {Module} from '@nestjs/common';
+import {AuthController} from './auth.controller';
+import {AuthService} from './auth.service';
+import {PrismaService} from "../prisma.service";
+import {JwtModule, JwtService} from "@nestjs/jwt";
+import {JwtStrategy} from "./jwt.strategy";
+import {UserService} from "../user/user.service";
 
+// console.log({secret: process.env.JWT_SECRET});
 @Module({
+    imports: [
+        JwtModule.register({
+            global: true,
+            secret: process.env.JWT_SECRET,
+            signOptions: {expiresIn: '30d'}
+        })
+    ],
     controllers: [AuthController],
-    providers: [AuthService],
+    providers: [AuthService, PrismaService, JwtStrategy, UserService]
 })
-export class AuthModule {}
+export class AuthModule {
+}

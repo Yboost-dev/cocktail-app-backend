@@ -14,14 +14,11 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-
-  email String @unique
-  name String
-  password String
-}
-model Article {
-  id Int @id @default(autoincrement())
+  id        String      @id @default(cuid())
+  email     String   @unique
+  firstname String
+  lastname  String
+  password  String
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
 }
