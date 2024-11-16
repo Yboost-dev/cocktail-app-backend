@@ -6,6 +6,7 @@ import {UserService} from "../user/user.service";
 import {CreateUserDto} from "./dto/create-user.dto";
 import {LogUserDto} from "./dto/login-user.dto";
 
+
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService,
@@ -14,9 +15,9 @@ export class AuthController {
 
     @Post('login')
     async login(@Body() authBody: LogUserDto) {
-        console.log({authBody});
         return await this.authService.Login({authBody});
     }
+
     @Post('register')
     async register(@Body() registerBody: CreateUserDto) {
         return await this.authService.Register({registerBody});

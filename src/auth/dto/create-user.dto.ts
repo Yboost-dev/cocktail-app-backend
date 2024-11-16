@@ -3,15 +3,15 @@ import {IsEmail, IsNotEmpty, IsString, MaxLength, MinLength} from 'class-validat
 export class CreateUserDto {
     @IsString()
     @IsNotEmpty({
-        message: 'Vous devez fornir un prénom',
+        message: 'Vous devez fournir un prénom',
     })
-    firstname: string;
+    readonly firstname: string;
 
     @IsString()
     @IsNotEmpty({
-        message: 'Vous devez fornir un nom de famille',
+        message: 'Vous devez fournir un nom de famille',
     })
-    lastname: string;
+    readonly lastname: string;
 
     @IsEmail(
         {},
@@ -20,7 +20,7 @@ export class CreateUserDto {
         }
     )
     @IsNotEmpty()
-    email: string;
+    readonly email: string;
 
     @IsString()
     @IsNotEmpty()
@@ -30,5 +30,5 @@ export class CreateUserDto {
     @MaxLength(64, {
         message: 'Le mot de passe doit être plus court que $constraint1 caractères',
     })
-    password: string;
+    readonly password: string;
 }
