@@ -1,19 +1,13 @@
-import {Controller, Get, Param} from '@nestjs/common';
-import {UserService} from './user.service';
+// user.controller.ts
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { UserService } from './user.service';  // Service utilisateur
 
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @Get("all")
-    getUsers() {
-        return this.userService.getUsers();
-    }
-
-    @Get('/:userId')
+    @Get(':userId')
     getUser(@Param('userId') userId: string) {
-        return this.userService.getUser({
-            userId
-        });
+        return this.userService.getUser({ userId });
     }
 }

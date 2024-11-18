@@ -12,8 +12,8 @@ async function bootstrap() {
         }
     ));
     app.use(cors({
-        origin: 'http://localhost:3000', // Remplacez par l'URL du client React
-        credentials: true, // Si nécessaire
+        origin: 'http://localhost:3001',
+        credentials: true,
     }));
     await app.listen(process.env.PORT ?? 8000);
 }
