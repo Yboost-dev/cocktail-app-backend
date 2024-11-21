@@ -22,13 +22,16 @@ export class CreateUserDto {
     @IsNotEmpty()
     readonly email: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MinLength(12, {
-        message: 'Le mot de passe doit être plus long que $constraint1 caractères',
-    })
-    @MaxLength(64, {
-        message: 'Le mot de passe doit être plus court que $constraint1 caractères',
-    })
-    readonly password: string;
+@IsString()
+@IsNotEmpty()
+@MinLength(12, {
+    message: 'Le mot de passe doit être plus long que $constraint1 caractères',
+})
+@MaxLength(64, {
+    message: 'Le mot de passe doit être plus court que $constraint1 caractères',
+})
+@Matches(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/, {
+    message: 'Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial',
+})
+readonly password: string;
 }

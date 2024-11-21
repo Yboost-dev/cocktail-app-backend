@@ -101,13 +101,13 @@ export class AuthService {
 
             return {
                 status: 201,
-                message: 'Utilisateur créé avec succès.',
+                message: ['Utilisateur créé avec succès.'],
             };
 
         } catch (error) {
             return {
                 status: 400,
-                message: error.message || 'Une erreur est survenue.',
+                message: error.message || ['Une erreur est survenue.'],
             };
         }
     }
