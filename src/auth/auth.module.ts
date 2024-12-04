@@ -5,8 +5,8 @@ import {PrismaService} from "../prisma.service";
 import {JwtModule, JwtService} from "@nestjs/jwt";
 import {JwtStrategy} from "./jwt.strategy";
 import {UserService} from "../user/user.service";
+import {MailerService} from "../mailer.service";
 
-// console.log({secret: process.env.JWT_SECRET});
 @Module({
     imports: [
         JwtModule.register({
@@ -16,7 +16,7 @@ import {UserService} from "../user/user.service";
         })
     ],
     controllers: [AuthController],
-    providers: [AuthService, PrismaService, JwtStrategy, UserService]
+    providers: [AuthService, PrismaService, JwtStrategy, UserService, MailerService]
 })
 export class AuthModule {
 }

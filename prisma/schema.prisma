@@ -14,6 +14,8 @@ model User {
   lastname  String
   password  String
   salt      String
+  isResettingPassword Boolean @default(false)
+  resetPasswordToken  String? @unique
   createAt  DateTime @default(now())
   updateAt  DateTime @updatedAt
 }
