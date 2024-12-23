@@ -1,4 +1,4 @@
-import {ConflictException, Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
 import {PrismaService} from "../prisma/prisma.service";
@@ -31,6 +31,13 @@ export class UsersService {
     }
 
     async update(id: string, updateUserDto: UpdateUserDto) {
+        // Vérifiez si l'utilisateur existe
+        const user = await this.prisma.user.findUnique({where: {id}});
+
+        if (!user) {
+            throw new NotFoundException(`User with ID ${id} does not exist.`);
+        }
+
         if (updateUserDto.password) {
             updateUserDto.password = await bcrypt.hash(
                 updateUserDto.password,
