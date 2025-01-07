@@ -1,16 +1,27 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {IsNumber, IsString} from "class-validator";
+import {IsNotEmpty, IsNumber, IsString, Min, IsIn} from "class-validator";
 
 export class CreateIngredientDto {
     @IsString()
-    @ApiProperty()
+    @IsNotEmpty()
+    @ApiProperty({description: "Nom de l'ingrédient, unique par type (ex: 'Menthe')."})
     name: string;
 
     @IsNumber()
-    @ApiProperty()
+    @Min(1)
+    @ApiProperty({
+        description: "Quantité requise pour cet ingrédient.",
+        example: 200,
+    })
     quantity: number;
 
     @IsString()
-    @ApiProperty()
+    @IsIn(["g", "ml"], {
+        message: "L'unité doit être soit 'g' ou 'ml'.",
+    })
+    @ApiProperty({
+        description: "Unités de mesure pour l'ingrédient (g, ml).",
+        example: "ml",
+    })
     unit: string;
 }

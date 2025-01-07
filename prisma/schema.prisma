@@ -8,32 +8,33 @@ datasource db {
 }
 
 model Article {
-  id                 Int                 @id @default(autoincrement())
-  title              String              @unique
-  description        String?
-  published          Boolean             @default(false)
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  articleIngredients ArticleIngredient[] // Relation avec ArticleIngredient
+  id          Int                 @id @default(autoincrement())
+  title       String              @unique
+  description String?
+  published   Boolean             @default(false)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  ingredients ArticleIngredient[]
 }
 
 model Ingredient {
-  id                 Int                 @id @default(autoincrement())
-  name               String              @unique
-  quantity           Float // Quantité totale de cet ingrédient (par exemple, 1000 ml)
-  unit               String // Unité (par exemple, ml ou g)
-  articleIngredients ArticleIngredient[] // Relation avec ArticleIngredient
+  id       Int                 @id @default(autoincrement())
+  name     String              @unique
+  quantity Float
+  unit     String
+  articles ArticleIngredient[]
 }
 
 model ArticleIngredient {
-  id           Int        @id @default(autoincrement())
-  article      Article    @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  id           Int   @id @default(autoincrement())
   articleId    Int
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
   ingredientId Int
-  quantity     Float // Quantité spécifique utilisée dans cet article (par exemple, 1 ml pour le rhum)
+  quantity     Float
 
-  @@unique([articleId, ingredientId]) // Pour éviter les doublons d'association
+  article    Article    @relation(fields: [articleId], references: [id])
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@unique([articleId, ingredientId])
 }
 
 model User {

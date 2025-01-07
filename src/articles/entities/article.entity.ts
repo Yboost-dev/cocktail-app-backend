@@ -1,15 +1,21 @@
-import { Article } from "@prisma/client";
-import { ApiProperty } from "@nestjs/swagger";
-import {IngredientEntity} from "../../ingredients/entities/ingredient.entity";
+import {Article} from "@prisma/client";
+import {ApiProperty} from "@nestjs/swagger";
+import {ArticleIngredient} from "../../article-ingredient/entities/article-ingredient.entity";
 
 export class ArticleEntity implements Article {
+    constructor({ingredient, ...data} : Partial<ArticleEntity>) {
+        Object.assign(this, data);
+        if (ingredient) {
+            this.ingredient = ingredient;
+        }
+    }
     @ApiProperty()
     id: number;
 
     @ApiProperty()
     title: string;
 
-    @ApiProperty({ nullable: true })
+    @ApiProperty({nullable: true})
     description: string;
 
     @ApiProperty()
@@ -21,14 +27,6 @@ export class ArticleEntity implements Article {
     @ApiProperty()
     updatedAt: Date;
 
-    @ApiProperty({ required: false, type: IngredientEntity })
-    ingredient?: IngredientEntity;
-
-    constructor({ ingredient, ...data }: Partial<ArticleEntity>) {
-        Object.assign(this, data);
-
-        if (ingredient) {
-            this.ingredient = new IngredientEntity(ingredient);
-        }
-    }
+    @ApiProperty({ type: ArticleIngredient})
+    ingredient: ArticleIngredient[];
 }

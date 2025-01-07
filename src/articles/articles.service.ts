@@ -8,31 +8,65 @@ export class ArticlesService {
     constructor(private prisma: PrismaService) {
     }
 
-    create(createArticleDto: CreateArticleDto) {
-        return this.prisma.article.create({
-            data: createArticleDto,
-        });
-    }
-
-    findAll() {
-        return this.prisma.article.findMany({
-            include: {
-                articleIngredients: {
-                    include: {
-                        ingredient: true, // Inclure les détails de chaque ingrédient
-                    },
-                },
+    async create(createArticleDto: CreateArticleDto) {
+        const { title, description, published , ingredients} = createArticleDto;
+        const article = await this.prisma.article.create({
+            data: {
+                title,
+                description,
+                published,
+                ingredients: {
+                    create: ingredients
+                }
             },
         });
+        ingredients.forEach(ingredient => {
+            this.prisma.articleIngredient.create({
+                data: {
+                    ingredientId: ingredient.ingredientId,
+                    articleId: article.id,
+                    quantity: ingredient.quantity
+                }
+            })
+        })
+        console.log(article);
+        return article;
+    }
+
+    async findAll() {
+        const articles = await this.prisma.article.findMany({
+            include: {
+                ingredients: {
+                    select: {
+                        ingredient: {
+                            select: {
+                                name: true,
+                                unit: true,
+                            }
+                        },
+                        quantity: true
+                    }
+                }
+            },
+        });
+
+        return articles.map(article => ({
+            ...article,
+            ingredients: article.ingredients.map(i => ({
+                name: i.ingredient.name,
+                quantity: i.quantity,
+                unit: i.ingredient.unit,
+            }))
+        }));
     }
 
     async findOne(id: number) {
         const article = await this.prisma.article.findUnique({
             where: {id},
             include: {
-                articleIngredients: {
+                ingredients: {
                     include: {
-                        ingredient: true, // Inclure les détails de chaque ingrédient
+                        ingredient: true,
                     },
                 },
             },
@@ -44,10 +78,17 @@ export class ArticlesService {
     }
 
     update(id: number, updateArticleDto: UpdateArticleDto) {
+        const { title, description, published, ingredients, ...rest } = updateArticleDto;
+
         return this.prisma.article.update({
-            where: {id},
-            data: updateArticleDto,
-        })
+            where: { id },
+            data: {
+                title,
+                description,
+                published,
+                ...rest,
+            },
+        });
     }
 
     remove(id: number) {

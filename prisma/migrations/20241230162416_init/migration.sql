@@ -57,7 +57,7 @@ CREATE UNIQUE INDEX "ArticleIngredient_articleId_ingredientId_key" ON "ArticleIn
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- AddForeignKey
-ALTER TABLE "ArticleIngredient" ADD CONSTRAINT "ArticleIngredient_articleId_fkey" FOREIGN KEY ("articleId") REFERENCES "Article"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ArticleIngredient" ADD CONSTRAINT "ArticleIngredient_articleId_fkey" FOREIGN KEY ("articleId") REFERENCES "Article"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ArticleIngredient" ADD CONSTRAINT "ArticleIngredient_ingredientId_fkey" FOREIGN KEY ("ingredientId") REFERENCES "Ingredient"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ArticleIngredient" ADD CONSTRAINT "ArticleIngredient_ingredientId_fkey" FOREIGN KEY ("ingredientId") REFERENCES "Ingredient"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

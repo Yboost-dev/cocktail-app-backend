@@ -24,17 +24,17 @@ async function main() {
 
     // Création ou mise à jour des ingrédients
     const rhum = await prisma.ingredient.upsert({
-        where: { name: 'Rhum' },
+        where: {name: 'Rhum'},
         update: {},
         create: {
             name: 'Rhum',
-            quantity: 1000, // 1000 ml
-            unit: 'ml',     // Unité
+            quantity: 1000,
+            unit: 'ml',
         },
     });
 
     const vodka = await prisma.ingredient.upsert({
-        where: { name: 'Vodka' },
+        where: {name: 'Vodka'},
         update: {},
         create: {
             name: 'Vodka',
@@ -44,11 +44,11 @@ async function main() {
     });
 
     const menthe = await prisma.ingredient.upsert({
-        where: { name: 'Menthe' },
+        where: {name: 'Menthe'},
         update: {},
         create: {
             name: 'Menthe',
-            quantity: 200, // 200 g
+            quantity: 1000,
             unit: 'g',
         },
     });
@@ -59,31 +59,28 @@ async function main() {
             title: 'Mojito',
             description: 'Un cocktail rafraîchissant.',
             published: true,
-        },
-    });
-
-    // Associer les ingrédients avec des quantités spécifiques au Mojito
-    await prisma.articleIngredient.create({
-        data: {
-            article: { connect: { id: article.id } },
-            ingredient: { connect: { id: rhum.id } },
-            quantity: 50, // 50 ml de rhum pour la recette
-        },
-    });
-
-    await prisma.articleIngredient.create({
-        data: {
-            article: { connect: { id: article.id } },
-            ingredient: { connect: { id: vodka.id } },
-            quantity: 50, // 50 ml de vodka pour la recette
-        },
-    });
-
-    await prisma.articleIngredient.create({
-        data: {
-            article: { connect: { id: article.id } },
-            ingredient: { connect: { id: menthe.id } },
-            quantity: 10, // 10 g de menthe pour la recette
+            ingredients: {
+                create: [
+                    {
+                        ingredient: {
+                            connectOrCreate: {
+                                where: {name: 'Rhum'},
+                                create: {name: 'Rhum', unit: 'ml', quantity: 1000},
+                            },
+                        },
+                        quantity: 5,
+                    },
+                    {
+                        ingredient: {
+                            connectOrCreate: {
+                                where: {name: 'Menthe'},
+                                create: {name: 'Menthe', unit: 'g', quantity: 1000},
+                            },
+                        },
+                        quantity: 1,
+                    },
+                ],
+            },
         },
     });
 

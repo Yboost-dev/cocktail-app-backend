@@ -1,5 +1,16 @@
-import {ArrayNotEmpty, IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, MinLength} from "class-validator";
+import {
+    ArrayNotEmpty,
+    IsArray,
+    IsBoolean,
+    IsNotEmpty,
+    IsOptional,
+    IsString,
+    MinLength,
+    ValidateNested
+} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
+import {Type} from "class-transformer";
+import {ArticleIngredient} from "../../article-ingredient/entities/article-ingredient.entity";
 
 export class CreateArticleDto {
     @IsString()
@@ -21,6 +32,8 @@ export class CreateArticleDto {
 
     @IsArray()
     @ArrayNotEmpty()
-    @ApiProperty({ type: [String] })
-    ingredients: string[];
+    @ValidateNested({ each: true })
+    @Type(() => ArticleIngredient)
+    @ApiProperty({ type: [ArticleIngredient] })
+    ingredients: ArticleIngredient[];
 }
