@@ -1,18 +1,56 @@
 import {ApiProperty} from "@nestjs/swagger";
+import {IsEmail, IsIn, IsString} from "class-validator";
 
 export class CreateUserDto {
-    @ApiProperty()
+
+    @IsEmail(
+        {},
+        {
+            message: "Email must be valid",
+        })
+    @ApiProperty(
+        {
+            description: 'Email address',
+            example: 'exemple@exemple.com'
+        }
+    )
     email: string;
 
-    @ApiProperty()
+    @IsString()
+    @ApiProperty(
+        {
+            description: 'Firstname',
+            example: 'John'
+        }
+    )
     firstname: string;
 
-    @ApiProperty()
+    @IsString()
+    @ApiProperty(
+        {
+            description: 'Lastname',
+            example: 'Doe'
+        }
+    )
     lastname: string;
 
-    @ApiProperty()
+    @ApiProperty(
+        {
+            description: 'Password',
+            example: 'Password123'
+        }
+    )
     password: string;
 
-    @ApiProperty()
+    @IsString()
+    @IsIn(["admin", "employee"], {
+        message: "Role must be admin or employee",
+    })
+    @ApiProperty(
+        {
+            description: 'Role',
+            example: 'admin / employee'
+        }
+    )
     role: string
 }

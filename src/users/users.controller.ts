@@ -2,7 +2,14 @@ import {Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, NotFoundEx
 import {UsersService} from './users.service';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+    ApiBadRequestResponse,
+    ApiBearerAuth,
+    ApiCreatedResponse, ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiTags,
+    ApiUnauthorizedResponse
+} from '@nestjs/swagger';
 import {UserEntity} from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
@@ -15,7 +22,9 @@ export class UsersController {
     @Post()
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    @ApiCreatedResponse({type: UserEntity})
+    @ApiCreatedResponse({type: UserEntity, description: 'User successfully created.'})
+    @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
+    @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
     async create(@Body() createUserDto: CreateUserDto) {
         return new UserEntity(await this.usersService.create(createUserDto));
     }
@@ -23,7 +32,10 @@ export class UsersController {
     @Get()
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    @ApiOkResponse({type: UserEntity, isArray: true})
+    @ApiOkResponse({type: UserEntity, isArray: true, description: 'Users successfully retrieved.'})
+    @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
+    @ApiNotFoundResponse({ description: 'No users found.' })
+    @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
     async findAll() {
         const users = await this.usersService.findAll();
         return users.map((user) => new UserEntity(user));
@@ -32,7 +44,10 @@ export class UsersController {
     @Get(':id')
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    @ApiOkResponse({type: UserEntity})
+    @ApiOkResponse({type: UserEntity, description: 'User successfully retrieved.'})
+    @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
+    @ApiNotFoundResponse({ description: 'User not found.' })
+    @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
     async findOne(@Param('id') id: string) {
         return new UserEntity(await this.usersService.findOne(id));
     }
@@ -40,7 +55,11 @@ export class UsersController {
     @Patch(':id')
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    @ApiOkResponse({type: UserEntity})
+    @ApiOkResponse({type: UserEntity, description: 'User successfully updated.'})
+    @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
+    @ApiNotFoundResponse({ description: 'User not found.' })
+    @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
+    @ApiCreatedResponse({type: UserEntity})
     async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
         return new UserEntity(await this.usersService.update(id, updateUserDto));
     }
@@ -48,7 +67,10 @@ export class UsersController {
     @Delete(':id')
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    @ApiOkResponse({type: UserEntity})
+    @ApiOkResponse({type: UserEntity, description: 'User deleted successfully.'})
+    @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
+    @ApiNotFoundResponse({ description: 'User not found.' })
+    @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
     async remove(@Param('id') id: string) {
         return new UserEntity(await this.usersService.remove(id));
     }

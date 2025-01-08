@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
 import {PrismaService} from "../prisma/prisma.service";
@@ -12,26 +12,38 @@ export class UsersService {
     }
 
     async create(createUserDto: CreateUserDto) {
-        const hashedPassword = await bcrypt.hash(
+        const userExisting = await this.prisma.user.findUnique({
+            where: {email: createUserDto.email},
+        })
+        if (userExisting) {
+            throw new BadRequestException(`User with email '${createUserDto.email}' already exists.`);
+        }
+        createUserDto.password = await bcrypt.hash(
             createUserDto.password,
             roundsOfHashing,
         );
-        createUserDto.password = hashedPassword;
         return this.prisma.user.create({
             data: createUserDto,
         });
     }
 
-    findAll() {
-        return this.prisma.user.findMany();
+    async findAll() {
+        const users = await this.prisma.user.findMany();
+        if (!users || users.length === 0) {
+            throw new NotFoundException(`No users found`);
+        }
+        return users;
     }
 
-    findOne(id: string) {
-        return this.prisma.user.findUnique({where: {id}});
+    async findOne(id: string) {
+        const user = await this.prisma.user.findUnique({where: {id}});
+        if (!user) {
+            throw new NotFoundException(`User with ID ${id} does not exist.`);
+        }
+        return user;
     }
 
     async update(id: string, updateUserDto: UpdateUserDto) {
-        // Vérifiez si l'utilisateur existe
         const user = await this.prisma.user.findUnique({where: {id}});
 
         if (!user) {
