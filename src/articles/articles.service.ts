@@ -198,12 +198,10 @@ export class ArticlesService {
             throw new NotFoundException(`Article with ID ${id} not found`);
         }
 
-        // Supprimez les relations avec les ingrédients dans la table pivot
         await this.prisma.articleIngredient.deleteMany({
             where: { articleId: id },
         });
 
-        // Supprimez l'article
         await this.prisma.article.delete({
             where: { id },
         });

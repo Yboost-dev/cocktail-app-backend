@@ -3,7 +3,13 @@ import { IngredientsService } from './ingredients.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse} from "@nestjs/swagger";
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse, ApiUnauthorizedResponse
+} from "@nestjs/swagger";
 import {IngredientEntity} from "./entities/ingredient.entity";
 
 @Controller('ingredients')
@@ -13,7 +19,9 @@ export class IngredientsController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiCreatedResponse({type: IngredientEntity})
+  @ApiCreatedResponse({type: IngredientEntity, description: 'Ingredient successfully created.'})
+  @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
+  @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
   create(@Body() createIngredientDto: CreateIngredientDto) {
     return this.ingredientsService.create(createIngredientDto);
   }
@@ -21,32 +29,47 @@ export class IngredientsController {
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({type: IngredientEntity, isArray: true})
+  @ApiOkResponse({type: IngredientEntity, isArray: true, description: 'Ingredients successfully retrieved.'})
+  @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
+  @ApiNotFoundResponse({ description: 'No ingredients found.' })
+  @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
   findAll() {
     return this.ingredientsService.findAll();
   }
 
-  @Get(':name')
+  @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({type: IngredientEntity})
-  findOne(@Param('name') name: string) {
-    return this.ingredientsService.findOne(name);
+  @ApiOkResponse({type: IngredientEntity, description: 'Ingredient successfully retrieved.'})
+  @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
+  @ApiNotFoundResponse({ description: 'Ingredient not found.' })
+  @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
+  findOne(@Param('id') id: number) {
+    return this.ingredientsService.findOne(+id);
   }
 
-  @Patch(':name')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({type: IngredientEntity})
-  update(@Param('name') name: string, @Body() updateIngredientDto: UpdateIngredientDto) {
-    return this.ingredientsService.update(name, updateIngredientDto);
+  @ApiOkResponse({type: IngredientEntity, description: 'Ingredient successfully updated.'})
+  @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
+  @ApiNotFoundResponse({ description: 'Ingredient not found.' })
+  @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
+  @ApiNotFoundResponse({ description: 'One or more ingredients do not exist.' })
+  @ApiCreatedResponse({type: IngredientEntity})
+  update(@Param('id') id: number, @Body() updateIngredientDto: UpdateIngredientDto) {
+    return this.ingredientsService.update(+id, updateIngredientDto);
   }
 
-  @Delete(':name')
+  @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({type: IngredientEntity})
-  remove(@Param('name') name: string) {
-    return this.ingredientsService.remove(name);
+  @ApiOkResponse({type: IngredientEntity, description: 'Ingredient successfully deleted.'})
+  @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
+  @ApiNotFoundResponse({ description: 'Ingredient not found.' })
+  @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
+  @ApiCreatedResponse({type: IngredientEntity})
+  remove(@Param('id') id: number) {
+    return this.ingredientsService.remove(+id);
   }
 }

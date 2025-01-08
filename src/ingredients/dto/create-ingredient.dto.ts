@@ -22,6 +22,7 @@ export class CreateIngredientDto {
     @ApiProperty({
         description: "Unités de mesure pour l'ingrédient (g, ml).",
         example: "ml",
+        enum: ["g", "ml"],
     })
     unit: string;
 }
