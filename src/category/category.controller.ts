@@ -28,8 +28,6 @@ export class CategoryController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @ApiOkResponse({type: CategoryEntity, isArray: true, description: 'Categories successfully retrieved.'})
   @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
   @ApiNotFoundResponse({ description: 'No Categories found.' })
@@ -39,8 +37,6 @@ export class CategoryController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @ApiOkResponse({type: CategoryEntity, description: 'Category successfully retrieved.'})
   @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
   @ApiNotFoundResponse({ description: 'Category not found.' })
