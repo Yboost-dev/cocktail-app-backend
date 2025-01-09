@@ -9,14 +9,20 @@ export class ArticlesService {
     }
 
     async create(createArticleDto: CreateArticleDto) {
-        const {title, description, price, published, ingredients} = createArticleDto;
+        const {title, description, categoryId, price, published, ingredients} = createArticleDto;
 
         const existingArticle = await this.prisma.article.findUnique({
             where: {title},
         });
-
         if (existingArticle) {
             throw new BadRequestException(`An article with the title '${title}' already exists.`);
+        }
+
+        const existingCategory = await this.prisma.category.findUnique({
+            where: {id: categoryId},
+        })
+        if (!existingCategory) {
+            throw new NotFoundException(`Category with ID ${categoryId} does not exist.`);
         }
 
         const ingredientChecks = await Promise.all(
@@ -38,6 +44,7 @@ export class ArticlesService {
                 title,
                 description,
                 price,
+                categoryId,
                 published,
                 ingredients: {
                     create: ingredients,
@@ -45,7 +52,6 @@ export class ArticlesService {
             },
         });
 
-        console.log(article);
         return article;
     }
 
@@ -66,6 +72,33 @@ export class ArticlesService {
             },
         });
 
+        return articles.map(article => ({
+            ...article,
+            ingredients: article.ingredients.map(i => ({
+                name: i.ingredient.name,
+                quantity: i.quantity,
+                unit: i.ingredient.unit,
+            }))
+        }));
+    }
+
+    async findPublished() {
+        const articles = await this.prisma.article.findMany({
+            where: { published: true },
+            include: {
+                ingredients: {
+                    select: {
+                        ingredient: {
+                            select: {
+                                name: true,
+                                unit: true,
+                            }
+                        },
+                        quantity: true
+                    }
+                }
+            }
+        });
         return articles.map(article => ({
             ...article,
             ingredients: article.ingredients.map(i => ({
@@ -108,15 +141,21 @@ export class ArticlesService {
     }
 
     async update(id: number, updateArticleDto: UpdateArticleDto) {
-        const { title, description, published, price, ingredients } = updateArticleDto;
+        const { title, description, categoryId, published, price, ingredients } = updateArticleDto;
 
         const existingArticle = await this.prisma.article.findUnique({
             where: { id },
             include: { ingredients: true },
         });
-
         if (!existingArticle) {
             throw new NotFoundException(`Article with ID ${id} not found`);
+        }
+
+        const existingCategory = await this.prisma.category.findUnique({
+            where: {id: categoryId},
+        })
+        if (!existingCategory) {
+            throw new NotFoundException(`Category with ID ${categoryId} does not exist.`);
         }
 
         if (ingredients && ingredients.length > 0) {
@@ -186,6 +225,7 @@ export class ArticlesService {
                 title,
                 description,
                 published,
+                categoryId,
                 price,
             },
         });

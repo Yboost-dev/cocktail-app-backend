@@ -30,6 +30,11 @@ export class CreateArticleDto {
     @ApiProperty()
     price: number;
 
+    @IsNumber()
+    @IsNotEmpty()
+    @ApiProperty()
+    categoryId: number;
+
     @IsBoolean()
     @IsOptional()
     @ApiProperty({ required: false, default: false })

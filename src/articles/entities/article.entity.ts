@@ -22,6 +22,9 @@ export class ArticleEntity implements Article {
     price: number;
 
     @ApiProperty()
+    categoryId: number;
+
+    @ApiProperty()
     published: boolean;
 
     @ApiProperty()

@@ -39,21 +39,21 @@ export class IngredientsService {
     }
 
     async update(id: number, updateIngredientDto: UpdateIngredientDto) {
-        const ingredient = await this.prisma.ingredient.findUnique({ where: { id } });
+        const ingredient = await this.prisma.ingredient.findUnique({where: {id}});
         if (!ingredient) {
             throw new NotFoundException(`No ingredient found.`);
         }
-        return this.prisma.ingredient.update({ where: { id: id }, data: updateIngredientDto });
+        return this.prisma.ingredient.update({where: {id: id}, data: updateIngredientDto});
     }
 
     async remove(id: number) {
-        const ingredient = await this.prisma.ingredient.findUnique({ where: { id } });
+        const ingredient = await this.prisma.ingredient.findUnique({where: {id}});
         if (!ingredient) {
             throw new NotFoundException(`No ingredient found.`);
         }
         await this.prisma.articleIngredient.deleteMany({
-            where: { ingredientId: id },
+            where: {ingredientId: id},
         });
-        return this.prisma.ingredient.delete({ where: { id: id } });
+        return this.prisma.ingredient.delete({where: {id: id}});
     }
 }

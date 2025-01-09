@@ -2,7 +2,7 @@ import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards} from '@nes
 import {OrdersService} from './orders.service';
 import {CreateOrderDto} from './dto/create-order.dto';
 import {UpdateOrderDto} from './dto/update-order.dto';
-import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {JwtAuthGuard} from "../auth/strategy/jwt-auth.guard";
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,

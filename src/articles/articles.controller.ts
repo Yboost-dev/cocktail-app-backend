@@ -1,8 +1,20 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe} from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Patch,
+    Param,
+    Delete,
+    UseGuards,
+    ParseIntPipe,
+    Req,
+    NotFoundException
+} from '@nestjs/common';
 import {ArticlesService} from './articles.service';
 import {CreateArticleDto} from './dto/create-article.dto';
 import {UpdateArticleDto} from './dto/update-article.dto';
-import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {JwtAuthGuard, OptionalJwtAuthGuard} from "../auth/strategy/jwt-auth.guard";
 import {
     ApiAcceptedResponse,
     ApiBadRequestResponse,
@@ -32,15 +44,27 @@ export class ArticlesController {
     }
 
     @Get()
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(OptionalJwtAuthGuard)
     @ApiBearerAuth()
-    @ApiOkResponse({ type: ArticleEntity, description: 'Articles successfully retrieved.'})
+    @ApiOkResponse({ type: [ArticleEntity], description: 'Articles successfully retrieved.' }) // Modifié pour refléter un tableau d'articles
     @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
     @ApiNotFoundResponse({ description: 'No articles found.' })
     @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
-    async findAll() {
-        const articles = await this.articlesService.findAll();
-        return articles.map((article) => new ArticleEntity(article));
+    async findAll(@Req() req: any) {
+        const user = req.user;
+        let articles;
+
+        if (user) {
+            articles = await this.articlesService.findAll();
+        } else {
+            articles = await this.articlesService.findPublished();
+        }
+
+        if (!articles || articles.length === 0) {
+            throw new NotFoundException('No articles found.');
+        }
+
+        return articles.map(article => new ArticleEntity(article));
     }
 
     @Get(':id')
