@@ -38,7 +38,7 @@ async function main() {
             name: 'Shooters',
             description: 'Cocktails shooters',
         },
-    })
+    });
     const longDrink = await prisma.category.upsert({
         where: { name: 'Long drink' },
         update: {},
@@ -46,7 +46,7 @@ async function main() {
             name: 'Long drink',
             description: 'Cocktails longDrink',
         },
-    })
+    });
     const shortDrink = await prisma.category.upsert({
         where: { name: 'Short drink' },
         update: {},
@@ -54,7 +54,7 @@ async function main() {
             name: 'Short drink',
             description: 'Cocktails shortDrink',
         },
-    })
+    });
     const soft = await prisma.category.upsert({
         where: { name: 'Soft' },
         update: {},
@@ -62,7 +62,7 @@ async function main() {
             name: 'Soft',
             description: 'Cocktails soft',
         }
-    })
+    });
     const cocktail = await prisma.category.upsert({
         where: { name: 'Cocktail' },
         update: {},
@@ -70,7 +70,7 @@ async function main() {
             name: 'Cocktail',
             description: 'Cocktails'
         }
-    })
+    });
     const mocktail = await prisma.category.upsert({
         where: { name: 'Mocktail' },
         update: {},
@@ -78,7 +78,7 @@ async function main() {
             name: 'Mocktail',
             description: 'Cocktails sans alcool'
         }
-    })
+    });
 
     // création ingrédients
     const rhum = await prisma.ingredient.upsert({
@@ -110,12 +110,12 @@ async function main() {
     });
 
     // création articles
-    const article = await prisma.article.create({
+    const Mojito = await prisma.article.create({
         data: {
             title: 'Mojito',
             description: 'Un cocktail rafraîchissant.',
-            price: 100,
-            categoryId: 1,
+            price: 11.30,
+            categoryId: 6,
             published: true,
             ingredients: {
                 create: [
@@ -142,6 +142,48 @@ async function main() {
         },
     });
 
+    const PinaColada = await prisma.article.create({
+        data: {
+            title: 'Pina Colada',
+            description: 'Un cocktail classique et exotique.',
+            price: 12.50,
+            categoryId: 6,
+            published: false,
+            ingredients: {
+                create: [
+                    {
+                        ingredient: {
+                            connectOrCreate: {
+                                where: { name: 'Rhum' },
+                                create: { name: 'Rhum', unit: 'ml', quantity: 1000 },
+                            },
+                        },
+                        quantity: 6,
+                    },
+                    {
+                        ingredient: {
+                            connectOrCreate: {
+                                where: { name: 'Jus d\'ananas' },
+                                create: { name: 'Jus d\'ananas', unit: 'ml', quantity: 1500 },
+                            },
+                        },
+                        quantity: 10,
+                    },
+                    {
+                        ingredient: {
+                            connectOrCreate: {
+                                where: { name: 'Lait de coco' },
+                                create: { name: 'Lait de coco', unit: 'ml', quantity: 1000 },
+                            },
+                        },
+                        quantity: 4,
+                    },
+                ],
+            },
+        },
+    });
+
+
     // création commandes
     const order = await prisma.order.create({
         data: {
@@ -152,8 +194,8 @@ async function main() {
             articles: {
                 create: [
                     {
-                        articleId: article.id,
-                        articlePrice: article.price,
+                        articleId: Mojito.id,
+                        articlePrice: Mojito.price,
                         quantity: 1,
                     },
                 ],
