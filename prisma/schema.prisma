@@ -17,6 +17,15 @@ model Article {
   updatedAt   DateTime            @updatedAt
   ingredients ArticleIngredient[]
   Item        Item[]
+  categoryId  Int
+  category    Category            @relation(fields: [categoryId], references: [id])
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  articles    Article[]
 }
 
 model Ingredient {
