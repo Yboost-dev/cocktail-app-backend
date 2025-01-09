@@ -11,10 +11,12 @@ model Article {
   id          Int                 @id @default(autoincrement())
   title       String              @unique
   description String?
+  price       Float
   published   Boolean             @default(false)
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
   ingredients ArticleIngredient[]
+  Item        Item[]
 }
 
 model Ingredient {
@@ -35,6 +37,28 @@ model ArticleIngredient {
   ingredient Ingredient @relation(fields: [ingredientId], references: [id])
 
   @@unique([articleId, ingredientId])
+}
+
+model Order {
+  id       Int     @id @default(autoincrement())
+  email    String
+  token    String
+  status   String
+  paid     Boolean
+  articles Item[]
+}
+
+model Item {
+  id Int @id @default(autoincrement())
+
+  orderId Int
+  order   Order @relation(fields: [orderId], references: [id])
+
+  articleId    Int
+  article      Article @relation(fields: [articleId], references: [id])
+  articlePrice Float
+
+  quantity Int
 }
 
 model User {

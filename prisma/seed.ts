@@ -7,7 +7,6 @@ const roundsOfHashing = 10;
 async function main() {
     const passwordAdmin = await bcrypt.hash('AdminUser', roundsOfHashing);
 
-    // Création ou mise à jour de l'utilisateur admin
     const userAdmin = await prisma.user.upsert({
         where: {email: 'admin@admin.com'},
         update: {
@@ -22,7 +21,6 @@ async function main() {
         },
     });
 
-    // Création ou mise à jour des ingrédients
     const rhum = await prisma.ingredient.upsert({
         where: {name: 'Rhum'},
         update: {},
@@ -38,7 +36,7 @@ async function main() {
         update: {},
         create: {
             name: 'Vodka',
-            quantity: 500, // 500 ml
+            quantity: 500,
             unit: 'ml',
         },
     });
@@ -53,11 +51,11 @@ async function main() {
         },
     });
 
-    // Créer un article (par exemple, une recette de Mojito)
     const article = await prisma.article.create({
         data: {
             title: 'Mojito',
             description: 'Un cocktail rafraîchissant.',
+            price: 100,
             published: true,
             ingredients: {
                 create: [
@@ -84,7 +82,23 @@ async function main() {
         },
     });
 
-    console.log({userAdmin, article});
+    const order = await prisma.order.create({
+        data: {
+            email: 'client@client.com',
+            token: 'ziubufaifozad12ISUisubz',
+            status: 'pending',
+            paid: false,
+            articles: {
+                create: [
+                    {
+                        articleId: article.id,
+                        articlePrice: article.price,
+                        quantity: 1,
+                    },
+                ],
+            },
+        },
+    });
 }
 
 main()

@@ -9,7 +9,7 @@ export class ArticlesService {
     }
 
     async create(createArticleDto: CreateArticleDto) {
-        const {title, description, published, ingredients} = createArticleDto;
+        const {title, description, price, published, ingredients} = createArticleDto;
 
         const existingArticle = await this.prisma.article.findUnique({
             where: {title},
@@ -37,6 +37,7 @@ export class ArticlesService {
             data: {
                 title,
                 description,
+                price,
                 published,
                 ingredients: {
                     create: ingredients,
@@ -107,7 +108,7 @@ export class ArticlesService {
     }
 
     async update(id: number, updateArticleDto: UpdateArticleDto) {
-        const { title, description, published, ingredients } = updateArticleDto;
+        const { title, description, published, price, ingredients } = updateArticleDto;
 
         const existingArticle = await this.prisma.article.findUnique({
             where: { id },
@@ -185,6 +186,7 @@ export class ArticlesService {
                 title,
                 description,
                 published,
+                price,
             },
         });
     }
@@ -198,7 +200,7 @@ export class ArticlesService {
             throw new NotFoundException(`Article with ID ${id} not found`);
         }
 
-        await this.prisma.articleIngredient.deleteMany({
+            await this.prisma.articleIngredient.deleteMany({
             where: { articleId: id },
         });
 

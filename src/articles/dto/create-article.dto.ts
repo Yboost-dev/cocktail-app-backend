@@ -2,7 +2,7 @@ import {
     ArrayNotEmpty,
     IsArray,
     IsBoolean,
-    IsNotEmpty,
+    IsNotEmpty, IsNumber,
     IsOptional,
     IsString,
     MinLength,
@@ -24,6 +24,11 @@ export class CreateArticleDto {
     @MinLength(10)
     @ApiProperty()
     description: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    @ApiProperty()
+    price: number;
 
     @IsBoolean()
     @IsOptional()

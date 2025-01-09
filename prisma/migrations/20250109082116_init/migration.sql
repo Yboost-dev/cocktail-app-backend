@@ -3,6 +3,7 @@ CREATE TABLE "Article" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
+    "price" DOUBLE PRECISION NOT NULL,
     "published" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -28,6 +29,28 @@ CREATE TABLE "ArticleIngredient" (
     "quantity" DOUBLE PRECISION NOT NULL,
 
     CONSTRAINT "ArticleIngredient_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Order" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "paid" BOOLEAN NOT NULL,
+
+    CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Item" (
+    "id" SERIAL NOT NULL,
+    "orderId" INTEGER NOT NULL,
+    "articleId" INTEGER NOT NULL,
+    "articlePrice" DOUBLE PRECISION NOT NULL,
+    "quantity" INTEGER NOT NULL,
+
+    CONSTRAINT "Item_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -61,3 +84,9 @@ ALTER TABLE "ArticleIngredient" ADD CONSTRAINT "ArticleIngredient_articleId_fkey
 
 -- AddForeignKey
 ALTER TABLE "ArticleIngredient" ADD CONSTRAINT "ArticleIngredient_ingredientId_fkey" FOREIGN KEY ("ingredientId") REFERENCES "Ingredient"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Item" ADD CONSTRAINT "Item_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Item" ADD CONSTRAINT "Item_articleId_fkey" FOREIGN KEY ("articleId") REFERENCES "Article"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
