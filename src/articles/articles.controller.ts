@@ -68,14 +68,26 @@ export class ArticlesController {
     }
 
     @Get(':id')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(OptionalJwtAuthGuard)
     @ApiBearerAuth()
     @ApiOkResponse({ type: ArticleEntity, description: 'Article successfully retrieved.'})
     @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
     @ApiNotFoundResponse({ description: 'Article not found.' })
     @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
-    async findOne(@Param('id', ParseIntPipe) id: number) {
-        const article = await this.articlesService.findOne(id);
+    async findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+        const user = req.user;
+        let article;
+
+        if (user) {
+            article = await this.articlesService.findOne(id);
+        } else {
+            throw new NotFoundException('No articles found.');
+        }
+
+        if (!article || article.length === 0) {
+            throw new NotFoundException('No articles found.');
+        }
+
         return article.map((article) => new ArticleEntity(article));
     }
 
