@@ -14,6 +14,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     switch (exception.code) {
       case 'P2002': {
         const status = HttpStatus.CONFLICT;
+
         response.status(status).json({
           statusCode: status,
           message: message,
@@ -21,7 +22,6 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         break;
       }
       default:
-        // default 500 error code
         super.catch(exception, host);
         break;
     }

@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { ArticlesModule } from './articles/articles.module';
-import { IngredientsModule } from './ingredients/ingredients.module';
-import { OrdersModule } from './orders/orders.module';
-import { CategoryModule } from './category/category.module';
+import { UsersModule } from './module/users/users.module';
+import { AuthModule } from './module/auth/auth.module';
+import { ArticlesModule } from './module/articles/articles.module';
+import { IngredientsModule } from './module/ingredients/ingredients.module';
+import { OrdersModule } from './module/orders/orders.module';
+import { CategoryModule } from './module/category/category.module';
 
 @Module({
   imports: [
@@ -19,7 +17,7 @@ import { CategoryModule } from './category/category.module';
     OrdersModule,
     CategoryModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

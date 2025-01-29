@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,7 +21,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
-import { JwtAuthGuard } from 'src/auth/strategy/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/module/auth/strategy/jwt-auth.guard';
 
 @Controller('users')
 @ApiTags('Users')

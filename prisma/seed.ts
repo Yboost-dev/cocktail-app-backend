@@ -1,11 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { AuthService } from 'src/module/auth/auth.service';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 const prisma = new PrismaClient();
-const roundsOfHashing = 10;
 
 async function main() {
-  const passwordAdmin = await bcrypt.hash('AdminUser', roundsOfHashing);
+  const passwordAdmin = await bcrypt.hash('AdminUser', 10);
 
   // création users
   await prisma.user.upsert({
@@ -163,8 +166,8 @@ async function main() {
           {
             ingredient: {
               connectOrCreate: {
-                where: { name: "Jus d'ananas" },
-                create: { name: "Jus d'ananas", unit: 'ml', quantity: 1500 },
+                where: { name: 'Jus d\'ananas' },
+                create: { name: 'Jus d\'ananas', unit: 'ml', quantity: 1500 },
               },
             },
             quantity: 10,
@@ -204,10 +207,12 @@ async function main() {
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
+  .then(async () => {
     await prisma.$disconnect();
+    console.log('Seeding completed!');
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
   });
