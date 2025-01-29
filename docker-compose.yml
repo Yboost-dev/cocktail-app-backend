@@ -1,10 +1,12 @@
 services:
   postgres:
-    image: postgres:13.5
+    image: postgres:latest
+    container_name: yboost
     restart: always
     environment:
       - POSTGRES_USER=yboost
       - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=yboostdb
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:
