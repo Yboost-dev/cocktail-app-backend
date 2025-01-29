@@ -10,16 +10,16 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 export const jwtSecret = 'zjP9h6ZI5LoSKCRj';
 
 @Module({
-    imports: [
-        PrismaModule,
-        PassportModule,
-        JwtModule.register({
-            secret: jwtSecret,
-            signOptions: { expiresIn: '5m' },
-        }),
-        UsersModule,
-    ],
-    controllers: [AuthController],
-    providers: [AuthService, JwtStrategy],
+  imports: [
+    PrismaModule,
+    PassportModule,
+    JwtModule.register({
+      secret: jwtSecret,
+      signOptions: { expiresIn: '7d' },
+    }),
+    UsersModule,
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {}
