@@ -1,23 +1,42 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { jwtSecret } from '../auth.module';
 import { UsersService } from 'src/module/users/users.service';
+import { ConfigService } from '@nestjs/config';
+import { ERROR } from 'src/common/constants/error.constants';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(private usersService: UsersService) {
+  constructor(private userService: UsersService) {
+    const config = new ConfigService();
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: jwtSecret,
+      secretOrKey: config.get('JWT_SECRET'),
     });
   }
 
   async validate(payload: { userId: string }) {
-    const user = await this.usersService.findOne(payload.userId);
-    if (!user) {
-      throw new UnauthorizedException();
+    try {
+      // Rechercher l'utilisateur
+      const user = await this.userService.findOne(payload.userId);
+
+      // Confirmer la présence de l'utilisateur
+      if (!user) {
+        throw new UnauthorizedException(ERROR.UnauthorizedAccess);
+      }
+
+      // Vérifier le rôle
+      if (user.role !== 'admin') {
+        throw new ForbiddenException(ERROR.ForbiddenAction);
+      }
+
+      return user;
+    } catch (error) {
+      throw error;
     }
-    return user;
   }
 }

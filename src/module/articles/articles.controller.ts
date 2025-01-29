@@ -9,7 +9,8 @@ import {
   UseGuards,
   ParseIntPipe,
   Req,
-  NotFoundException, BadRequestException,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -59,7 +60,6 @@ export class ArticlesController {
 
       throw new BadRequestException(ERROR.InvalidInputFormat); // Erreur générique
     }
-
   }
 
   @Get()

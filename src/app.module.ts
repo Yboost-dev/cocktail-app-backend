@@ -6,6 +6,7 @@ import { ArticlesModule } from './module/articles/articles.module';
 import { IngredientsModule } from './module/ingredients/ingredients.module';
 import { OrdersModule } from './module/orders/orders.module';
 import { CategoryModule } from './module/category/category.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CategoryModule } from './module/category/category.module';
     ArticlesModule,
     IngredientsModule,
     OrdersModule,
+    ConfigModule.forRoot({ isGlobal: true }),
     CategoryModule,
   ],
   controllers: [],

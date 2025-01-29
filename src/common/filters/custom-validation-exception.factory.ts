@@ -8,6 +8,8 @@ import { ERROR } from '../constants/error.constants';
 export function customValidationExceptionFactory(
   validationErrors: ValidationError[],
 ): BadRequestException {
+  console.error('Erreurs brutes reçues :', validationErrors);
+
   const missingFieldsErrors = validationErrors.filter(
     (err) => err.constraints && err.constraints.isNotEmpty,
   );
@@ -20,6 +22,9 @@ export function customValidationExceptionFactory(
         err.constraints.isString ||
         err.constraints.isBoolean),
   );
+
+  console.log('Champs manquants :', missingFieldsErrors);
+  console.log('Erreurs de format :', invalidFormatErrors);
 
   if (missingFieldsErrors.length) {
     return new BadRequestException({
