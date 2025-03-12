@@ -34,7 +34,7 @@ async function main() {
     where: { name: 'shooters' },
     update: {},
     create: {
-      name: 'Shooters',
+      name: 'shooters',
       description: 'Cocktails shooters',
     },
   });
@@ -42,7 +42,7 @@ async function main() {
     where: { name: 'long-drink' },
     update: {},
     create: {
-      name: 'Long drink',
+      name: 'long-drink',
       description: 'Cocktails longDrink',
     },
   });
@@ -50,7 +50,7 @@ async function main() {
     where: { name: 'short-drink' },
     update: {},
     create: {
-      name: 'Short drink',
+      name: 'short-drink',
       description: 'Cocktails shortDrink',
     },
   });
@@ -58,7 +58,7 @@ async function main() {
     where: { name: 'soft' },
     update: {},
     create: {
-      name: 'Soft',
+      name: 'soft',
       description: 'Cocktails soft',
     },
   });
@@ -66,7 +66,7 @@ async function main() {
     where: { name: 'cocktail' },
     update: {},
     create: {
-      name: 'Cocktail',
+      name: 'cocktail',
       description: 'Cocktails',
     },
   });
@@ -74,7 +74,7 @@ async function main() {
     where: { name: 'mocktail' },
     update: {},
     create: {
-      name: 'Mocktail',
+      name: 'mocktail',
       description: 'Cocktails sans alcool',
     },
   });
@@ -84,7 +84,7 @@ async function main() {
     where: { name: 'rhum' },
     update: {},
     create: {
-      name: 'Rhum',
+      name: 'rhum',
       quantity: 1000,
       unit: 'ml',
     },
@@ -93,7 +93,7 @@ async function main() {
     where: { name: 'vodka' },
     update: {},
     create: {
-      name: 'Vodka',
+      name: 'vodka',
       quantity: 500,
       unit: 'ml',
     },
@@ -102,7 +102,7 @@ async function main() {
     where: { name: 'menthe' },
     update: {},
     create: {
-      name: 'Menthe',
+      name: 'menthe',
       quantity: 1000,
       unit: 'g',
     },
