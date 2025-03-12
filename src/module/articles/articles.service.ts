@@ -7,14 +7,23 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ERROR } from 'src/common/constants/error.constants';
+import { join } from 'path';
 
 @Injectable()
 export class ArticlesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createArticleDto: CreateArticleDto) {
+  async create(createArticleDto: CreateArticleDto, file: Express.Multer.File) {
     const { title, description, categoryId, price, published, ingredients } =
       createArticleDto;
+
+    if (!file || !file.mimetype.startsWith('image/')) {
+      throw new BadRequestException(
+        'Invalid file format, only images are allowed.',
+      );
+    }
+
+    const finalPath = join(process.cwd(), '/uploads/articles', file.filename);
 
     const existingArticle = await this.prisma.article.findUnique({
       where: { title },
@@ -53,6 +62,7 @@ export class ArticlesService {
         title,
         description,
         price,
+        imagePath: finalPath,
         categoryId,
         published,
         ingredients: {

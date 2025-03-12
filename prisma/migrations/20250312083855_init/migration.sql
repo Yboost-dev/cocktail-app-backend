@@ -2,6 +2,7 @@
 CREATE TABLE "Article" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
+    "imagePath" TEXT NOT NULL,
     "description" TEXT,
     "price" DOUBLE PRECISION NOT NULL,
     "published" BOOLEAN NOT NULL DEFAULT false,

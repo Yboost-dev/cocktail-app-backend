@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  BadRequestException, Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -39,9 +39,7 @@ export class UsersController {
   })
   @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
   @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
-  async create(@Body() createUserDto: CreateUserDto, @Req() req) {
-    console.log('Contenu reçu dans la requête complète :', req.body);
-    console.log('Données validées (DTO) :', createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
     try {
       return new UserEntity(await this.usersService.create(createUserDto));
     } catch (error) {

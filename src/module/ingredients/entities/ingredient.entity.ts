@@ -1,16 +1,16 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Ingredient } from "@prisma/client";
+import { ApiProperty } from '@nestjs/swagger';
+import { Ingredient } from '@prisma/client';
 
 export class IngredientEntity implements Ingredient {
-    @ApiProperty()
-    id: number;
+  @ApiProperty()
+  id: number;
 
-    @ApiProperty()
-    name: string;
+  @ApiProperty()
+  name: string;
 
-    @ApiProperty()
-    quantity: number;
+  @ApiProperty()
+  quantity: number;
 
-    @ApiProperty({ nullable: true })
-    unit: string | null;
+  @ApiProperty({ nullable: true })
+  unit: string | null;
 }

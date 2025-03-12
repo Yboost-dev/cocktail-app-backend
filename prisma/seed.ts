@@ -114,6 +114,7 @@ async function main() {
       title: 'Mojito',
       description: 'Un cocktail rafraîchissant.',
       price: 11.3,
+      imagePath: 'mojito.jpg',
       categoryId: 6,
       published: true,
       ingredients: {
@@ -146,6 +147,7 @@ async function main() {
       title: 'Pina Colada',
       description: 'Un cocktail classique et exotique.',
       price: 12.5,
+      imagePath: 'pinaColada.jpg',
       categoryId: 6,
       published: false,
       ingredients: {

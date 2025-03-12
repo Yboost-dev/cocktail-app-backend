@@ -11,7 +11,10 @@ import {
   Req,
   NotFoundException,
   BadRequestException,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { diskStorage } from 'multer';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -32,15 +35,30 @@ import {
 import { ArticleEntity } from './entities/article.entity';
 import { SwaggerResponses } from 'src/common/constants/swagger.constants';
 import { ERROR } from 'src/common/constants/error.constants';
+import { extname } from 'path';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('articles')
 export class ArticlesController {
-  constructor(private readonly articlesService: ArticlesService) {}
+  constructor(private readonly articlesService: ArticlesService) {
+  }
 
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiResponse(SwaggerResponses.ErrorServer)
   @ApiBearerAuth()
+  @UseInterceptors(
+    FileInterceptor('imagePath', {
+      storage: diskStorage({
+        destination: './temp',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(null, `${uniqueSuffix}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
   @ApiCreatedResponse({
     type: ArticleEntity,
     description: 'Article successfully created.',
@@ -48,17 +66,23 @@ export class ArticlesController {
   @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
   @ApiNotFoundResponse({ description: 'One or more ingredients do not exist.' })
   @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
-  async create(@Body() createArticleDto: CreateArticleDto) {
+  async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() createArticleDto: CreateArticleDto,
+  ) {
+    if (!file) {
+      throw new BadRequestException(ERROR.InvalidInputFormat);
+    }
     try {
       return new ArticleEntity(
-        await this.articlesService.create(createArticleDto),
+        await this.articlesService.create(createArticleDto, file),
       );
     } catch (error) {
       if (error instanceof BadRequestException) {
-        throw error; // Propager les erreurs gérées spécifiquement
+        throw error;
       }
 
-      throw new BadRequestException(ERROR.InvalidInputFormat); // Erreur générique
+      throw new BadRequestException(ERROR.InvalidInputFormat);
     }
   }
 

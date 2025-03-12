@@ -7,6 +7,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { UsersModule } from 'src/module/users/users.module';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
+import { JwtOptionalStrategy } from './strategy/optional-jwt-auth.guards';
 
 const config = new ConfigService();
 
@@ -21,6 +22,6 @@ const config = new ConfigService();
     UsersModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, JwtOptionalStrategy],
 })
 export class AuthModule {}

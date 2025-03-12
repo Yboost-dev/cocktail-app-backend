@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ERROR } from 'src/common/constants/error.constants';
 
 @Injectable()
 export class OptionalJwtAuthGuard extends AuthGuard('jwt-optional') {
@@ -23,7 +22,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const request = context.switchToHttp().getRequest();
 
     if (err || !user) {
-      throw new UnauthorizedException('Access unauthorized'); // Soyez explicite
+      throw new UnauthorizedException('Access unauthorized');
     }
     return user;
   }

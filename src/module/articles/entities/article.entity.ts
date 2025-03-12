@@ -1,38 +1,42 @@
-import {Article} from "@prisma/client";
-import {ApiProperty} from "@nestjs/swagger";
-import {ArticleIngredient} from "../../article-ingredient/entities/article-ingredient.entity";
+import { Article } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
+import { ArticleIngredient } from '../../article-ingredient/entities/article-ingredient.entity';
 
 export class ArticleEntity implements Article {
-    constructor({ingredient, ...data} : Partial<ArticleEntity>) {
-        Object.assign(this, data);
-        if (ingredient) {
-            this.ingredient = ingredient;
-        }
+  constructor({ ingredient, ...data }: Partial<ArticleEntity>) {
+    Object.assign(this, data);
+    if (ingredient) {
+      this.ingredient = ingredient;
     }
-    @ApiProperty()
-    id: number;
+  }
 
-    @ApiProperty()
-    title: string;
+  @ApiProperty()
+  id: number;
 
-    @ApiProperty({nullable: true})
-    description: string;
+  @ApiProperty()
+  title: string;
 
-    @ApiProperty()
-    price: number;
+  @ApiProperty()
+  imagePath: string;
 
-    @ApiProperty()
-    categoryId: number;
+  @ApiProperty({ nullable: true })
+  description: string;
 
-    @ApiProperty()
-    published: boolean;
+  @ApiProperty()
+  price: number;
 
-    @ApiProperty()
-    createdAt: Date;
+  @ApiProperty()
+  categoryId: number;
 
-    @ApiProperty()
-    updatedAt: Date;
+  @ApiProperty()
+  published: boolean;
 
-    @ApiProperty({ type: ArticleIngredient})
-    ingredient: ArticleIngredient[];
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
+
+  @ApiProperty({ type: ArticleIngredient })
+  ingredient: ArticleIngredient[];
 }
