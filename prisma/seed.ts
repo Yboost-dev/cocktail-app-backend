@@ -23,7 +23,7 @@ async function main() {
 
   // création catégorie
   await prisma.category.upsert({
-    where: { name: 'Spiritueux' },
+    where: { name: 'spiritueux' },
     update: {},
     create: {
       name: 'Spiritueux',
@@ -31,7 +31,7 @@ async function main() {
     },
   });
   await prisma.category.upsert({
-    where: { name: 'Shooters' },
+    where: { name: 'shooters' },
     update: {},
     create: {
       name: 'Shooters',
@@ -39,7 +39,7 @@ async function main() {
     },
   });
   await prisma.category.upsert({
-    where: { name: 'Long drink' },
+    where: { name: 'long-drink' },
     update: {},
     create: {
       name: 'Long drink',
@@ -47,7 +47,7 @@ async function main() {
     },
   });
   await prisma.category.upsert({
-    where: { name: 'Short drink' },
+    where: { name: 'short-drink' },
     update: {},
     create: {
       name: 'Short drink',
@@ -55,7 +55,7 @@ async function main() {
     },
   });
   await prisma.category.upsert({
-    where: { name: 'Soft' },
+    where: { name: 'soft' },
     update: {},
     create: {
       name: 'Soft',
@@ -63,7 +63,7 @@ async function main() {
     },
   });
   await prisma.category.upsert({
-    where: { name: 'Cocktail' },
+    where: { name: 'cocktail' },
     update: {},
     create: {
       name: 'Cocktail',
@@ -71,7 +71,7 @@ async function main() {
     },
   });
   await prisma.category.upsert({
-    where: { name: 'Mocktail' },
+    where: { name: 'mocktail' },
     update: {},
     create: {
       name: 'Mocktail',
@@ -81,7 +81,7 @@ async function main() {
 
   // création ingrédients
   await prisma.ingredient.upsert({
-    where: { name: 'Rhum' },
+    where: { name: 'rhum' },
     update: {},
     create: {
       name: 'Rhum',
@@ -90,7 +90,7 @@ async function main() {
     },
   });
   await prisma.ingredient.upsert({
-    where: { name: 'Vodka' },
+    where: { name: 'vodka' },
     update: {},
     create: {
       name: 'Vodka',
@@ -99,7 +99,7 @@ async function main() {
     },
   });
   await prisma.ingredient.upsert({
-    where: { name: 'Menthe' },
+    where: { name: 'menthe' },
     update: {},
     create: {
       name: 'Menthe',
