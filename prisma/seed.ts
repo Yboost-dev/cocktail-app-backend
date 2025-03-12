@@ -26,15 +26,15 @@ async function main() {
     where: { name: 'spiritueux' },
     update: {},
     create: {
-      name: 'Spiritueux',
+      name: 'spiritueux',
       description: 'Cocktails spiritueux',
     },
   });
   await prisma.category.upsert({
-    where: { name: 'shooters' },
+    where: { name: 'shooter' },
     update: {},
     create: {
-      name: 'shooters',
+      name: 'shooter',
       description: 'Cocktails shooters',
     },
   });
@@ -68,6 +68,14 @@ async function main() {
     create: {
       name: 'cocktail',
       description: 'Cocktails',
+    },
+  });
+  await prisma.category.upsert({
+    where: { name: 'indemodables' },
+    update: {},
+    create: {
+      name: 'indemodables',
+      description: 'indemodables',
     },
   });
   await prisma.category.upsert({
