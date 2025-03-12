@@ -130,7 +130,7 @@ export class ArticlesController {
     if (user) {
       article = await this.articlesService.findOne(id);
     } else {
-      throw new NotFoundException('No articles found.');
+      article = await this.articlesService.findPublishedById(id);
     }
 
     if (!article || article.length === 0) {

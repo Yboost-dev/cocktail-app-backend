@@ -55,6 +55,29 @@ export class CategoryService {
     });
   }
 
+  async findOnePublish(name: string) {
+    const existingCategory = await this.prisma.category.findUnique({
+      where: {
+        name: name,
+      },
+    });
+    if (!existingCategory) {
+      throw new NotFoundException(`Category with ID ${name} not found`);
+    }
+    return this.prisma.category.findUnique({
+      where: {
+        name: name,
+      },
+      include: {
+        articles: {
+          where: {
+            published: true,
+          },
+        },
+      },
+    });
+  }
+
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const existingCategory = await this.prisma.category.findUnique({
       where: { id: id },

@@ -7,11 +7,15 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
+import {
+  JwtAuthGuard,
+  OptionalJwtAuthGuard,
+} from '../auth/strategy/jwt-auth.guard';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -54,6 +58,8 @@ export class CategoryController {
   }
 
   @Get(':name')
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOkResponse({
     type: CategoryEntity,
     description: 'Category successfully retrieved.',
@@ -61,8 +67,17 @@ export class CategoryController {
   @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
   @ApiNotFoundResponse({ description: 'Category not found.' })
   @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
-  findOne(@Param('name') name: string) {
-    return this.categoryService.findOne(name);
+  async findOne(@Param('name') name: string, @Req() req: any) {
+    const user = req.user;
+    let articles;
+
+    if (user) {
+      articles = await this.categoryService.findOne(name);
+    } else {
+      articles = await this.categoryService.findOnePublish(name);
+    }
+
+    return articles;
   }
 
   @Patch(':id')

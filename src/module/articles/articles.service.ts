@@ -159,6 +159,28 @@ export class ArticlesService {
     }));
   }
 
+  async findPublishedById(id: number) {
+    const article = await this.prisma.article.findMany({
+      where: { id, published: true },
+      include: {
+        ingredients: {
+          select: {
+            ingredient: {
+              select: {
+                name: true,
+                unit: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (article.length === 0) {
+      throw new NotFoundException(`Article with ID ${id} not found`);
+    }
+    return article;
+  }
+
   async update(id: number, updateArticleDto: UpdateArticleDto) {
     const { title, description, categoryId, published, price, ingredients } =
       updateArticleDto;
