@@ -26,6 +26,21 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Prerequisites
+
+Avant de commencer, assurez-vous d'avoir installé les prérequis suivants :
+
+- **Node.js** : Version 16.x ou supérieure. Vous pouvez télécharger Node.js [ici](https://nodejs.org/).
+- **Prisma** : Prisma est utilisé pour la gestion de la base de données. Pour l'installer globalement, utilisez la commande suivante :
+  
+  ```bash
+  npm install -g prisma
+  ```
+
+## Configuration
+
+Assurez-vous de remplir le fichier .env avec vos variables d’environnement avant de continuer. Ce fichier est essentiel pour configurer correctement votre projet. Vous pouvez vous baser sur un modèle que vous trouverez dans .env.example.
+
 ## Project setup
 
 ```bash
@@ -35,6 +50,11 @@ $ npm install
 ## Compile and run the project
 
 ```bash
+# docker
+$ npm run db:dev:up
+$ npm db:dev:restart
+$ docker compose up -d
+
 # development
 $ npm run start
 
