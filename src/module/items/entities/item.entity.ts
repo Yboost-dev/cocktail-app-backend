@@ -1,19 +1,24 @@
-import {ApiProperty} from "@nestjs/swagger";
-import {Exclude} from "class-transformer";
+import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
+import { IsNumber, IsPositive } from 'class-validator';
 
 export class Item {
-    @Exclude()
-    id: number;
+  @Exclude()
+  id: number;
 
-    @Exclude()
-    orderId: number;
+  @Exclude()
+  orderId: number;
 
-    @ApiProperty()
-    articleId: number
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  articleId: number;
 
-    @Exclude()
-    articlePrice: number
+  @Exclude()
+  articlePrice: number;
 
-    @ApiProperty()
-    quantity: number
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  quantity: number;
 }

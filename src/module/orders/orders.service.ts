@@ -1,46 +1,50 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {CreateOrderDto} from './dto/create-order.dto';
-import {UpdateOrderDto} from './dto/update-order.dto';
-import {PrismaService} from "../../prisma/prisma.service";
-import {plainToInstance} from "class-transformer";
-import {OrderEntity} from './entities/order.entity';
-
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
+import { PrismaService } from '../../prisma/prisma.service';
+import { plainToInstance } from 'class-transformer';
+import { OrderEntity } from './entities/order.entity';
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) {
-  }
-  async create(createOrderDto: CreateOrderDto) {
-    const { email, token, status, paid, articles } = createOrderDto;
+  constructor(private prisma: PrismaService) {}
 
-    const invalidArticles = articles.filter(article => article.quantity <= 0);
+  async create(createOrderDto: CreateOrderDto) {
+    const { email, token, status, paid, phone, table, articles } =
+      createOrderDto;
+
+    const invalidArticles = articles.filter((article) => article.quantity <= 0);
     if (invalidArticles.length > 0) {
       throw new Error(
-          `Les articles suivants ont une quantité invalide (inférieure ou égale à 0) : ${invalidArticles
-              .map(article => article.articleId)
-              .join(', ')}`
+        `Les articles suivants ont une quantité invalide (inférieure ou égale à 0) : ${invalidArticles
+          .map((article) => article.articleId)
+          .join(', ')}`,
       );
     }
 
-    const articleIds = articles.map(article => article.articleId);
+    const articleIds = articles.map((article) => article.articleId);
 
     const articleDetails = await this.prisma.article.findMany({
       where: { id: { in: articleIds } },
-      select: { id: true, price: true }
+      select: { id: true, price: true },
     });
 
-    const foundArticleIds = articleDetails.map(article => article.id);
-    const missingArticles = articleIds.filter(id => !foundArticleIds.includes(id));
+    const foundArticleIds = articleDetails.map((article) => article.id);
+    const missingArticles = articleIds.filter(
+      (id) => !foundArticleIds.includes(id),
+    );
 
     if (missingArticles.length > 0) {
       throw new NotFoundException(
-          `Les articles suivants sont introuvables: ${missingArticles.join(', ')}`
+        `Les articles suivants sont introuvables: ${missingArticles.join(', ')}`,
       );
     }
 
-    const articlePriceMap = new Map(articleDetails.map(article => [article.id, article.price]));
+    const articlePriceMap = new Map(
+      articleDetails.map((article) => [article.id, article.price]),
+    );
 
-    const articlesWithPrice = articles.map(article => ({
+    const articlesWithPrice = articles.map((article) => ({
       article: { connect: { id: article.articleId } },
       quantity: article.quantity,
       articlePrice: articlePriceMap.get(article.articleId),
@@ -50,6 +54,8 @@ export class OrdersService {
       data: {
         email,
         token,
+        phone,
+        table,
         status,
         paid,
         articles: {
@@ -77,7 +83,7 @@ export class OrdersService {
     return plainToInstance(OrderEntity, orders);
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const order = await this.prisma.order.findUnique({
       where: { id },
       include: {
@@ -88,15 +94,15 @@ export class OrdersService {
             quantity: true,
           },
         },
-      }
-    })
+      },
+    });
     if (!order) {
       throw new NotFoundException(`Order with ID ${id} not found`);
     }
     return plainToInstance(OrderEntity, order);
   }
 
-  async update(id: number, updateOrderDto: UpdateOrderDto) {
+  async update(id: string, updateOrderDto: UpdateOrderDto) {
     const { email, token, status, paid, articles } = updateOrderDto;
 
     // Rechercher la commande existante avec les articles et leurs prix historiques
@@ -117,9 +123,9 @@ export class OrdersService {
       throw new NotFoundException(`Order with ID ${id} not found`);
     }
 
-    const articlesWithPrice = articles.map(article => {
+    const articlesWithPrice = articles.map((article) => {
       const existingArticle = existingOrder.articles.find(
-          a => a.articleId === article.articleId
+        (a) => a.articleId === article.articleId,
       );
 
       return {
@@ -144,23 +150,23 @@ export class OrdersService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const exitingOrder = await this.prisma.order.findUnique({
       where: { id },
-    })
+    });
     if (!exitingOrder) {
       throw new NotFoundException(`Order with ID ${id} not found`);
     }
 
     const articlesItem = await this.prisma.item.deleteMany({
       where: { orderId: id },
-    })
+    });
     if (!articlesItem) {
       throw new NotFoundException(`Order with ID ${id} not found`);
     }
 
     await this.prisma.order.delete({
-      where: {id},
+      where: { id },
     });
     return {
       message: `Order with ID ${id} has been successfully deleted.`,

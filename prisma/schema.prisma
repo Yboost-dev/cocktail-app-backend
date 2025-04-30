@@ -50,8 +50,10 @@ model ArticleIngredient {
 }
 
 model Order {
-  id       Int     @id @default(autoincrement())
+  id       String  @id @default(cuid())
   email    String
+  phone    String
+  table    Int
   token    String
   status   String
   paid     Boolean
@@ -61,7 +63,7 @@ model Order {
 model Item {
   id Int @id @default(autoincrement())
 
-  orderId Int
+  orderId String
   order   Order @relation(fields: [orderId], references: [id])
 
   articleId    Int

@@ -197,6 +197,8 @@ async function main() {
     data: {
       email: 'client@client.com',
       token: 'ziubufaifozad12ISUisubz',
+      phone: '0123456789',
+      table: 1,
       status: 'pending',
       paid: false,
       articles: {

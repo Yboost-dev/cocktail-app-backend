@@ -10,7 +10,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { ArticleIngredient } from '../../article-ingredient/entities/article-ingredient.entity';
 
 export class CreateArticleDto {
@@ -29,22 +29,19 @@ export class CreateArticleDto {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty()
+  @Transform(({ value }) => (typeof value === 'string' ? Number(value) : value))
   price: number;
 
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty()
+  @Transform(({ value }) => (typeof value === 'string' ? Number(value) : value))
   categoryId: number;
 
   @IsBoolean()
   @IsOptional()
   @ApiProperty({ required: false, default: false })
   published?: boolean = false;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  imagePath: string;
 
   @IsArray()
   @ArrayNotEmpty()

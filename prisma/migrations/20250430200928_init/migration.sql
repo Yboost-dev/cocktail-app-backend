@@ -44,8 +44,10 @@ CREATE TABLE "ArticleIngredient" (
 
 -- CreateTable
 CREATE TABLE "Order" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
+    "table" INTEGER NOT NULL,
     "token" TEXT NOT NULL,
     "status" TEXT NOT NULL,
     "paid" BOOLEAN NOT NULL,
@@ -56,7 +58,7 @@ CREATE TABLE "Order" (
 -- CreateTable
 CREATE TABLE "Item" (
     "id" SERIAL NOT NULL,
-    "orderId" INTEGER NOT NULL,
+    "orderId" TEXT NOT NULL,
     "articleId" INTEGER NOT NULL,
     "articlePrice" DOUBLE PRECISION NOT NULL,
     "quantity" INTEGER NOT NULL,

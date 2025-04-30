@@ -8,6 +8,7 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ERROR } from 'src/common/constants/error.constants';
 import { join } from 'path';
+import * as fs from 'fs-extra';
 
 @Injectable()
 export class ArticlesService {
@@ -23,7 +24,8 @@ export class ArticlesService {
       );
     }
 
-    const finalPath = join(process.cwd(), '/uploads/articles', file.filename);
+    const uploadDir = join(process.cwd(), 'uploads', 'articles');
+    const finalPath = join(uploadDir, file.filename);
 
     const existingArticle = await this.prisma.article.findUnique({
       where: { title },
@@ -34,44 +36,43 @@ export class ArticlesService {
       );
     }
 
-    const existingCategory = await this.prisma.category.findUnique({
-      where: { id: categoryId },
-    });
-    if (!existingCategory) {
-      throw new NotFoundException(ERROR.ResourceNotFound);
-    }
+    try {
+      // S'assurer que le répertoire existe
+      await fs.ensureDir(uploadDir);
 
-    const ingredientChecks = await Promise.all(
-      ingredients.map(async (ingredient) => {
-        const exists = await this.prisma.ingredient.findUnique({
-          where: { id: ingredient.ingredientId },
-        });
-        if (!exists) {
-          throw new NotFoundException(ERROR.ResourceNotFound);
-        }
-        if (!ingredient.quantity || ingredient.quantity <= 0) {
-          throw new BadRequestException(
-            `Invalid quantity for ingredient ID ${ingredient.ingredientId}. Quantity must be greater than 0.`,
-          );
-        }
-      }),
-    );
+      // Déplacer le fichier vers sa destination finale
+      await fs.move(file.path, finalPath);
 
-    const article = await this.prisma.article.create({
-      data: {
-        title,
-        description,
-        price,
-        imagePath: finalPath,
-        categoryId,
-        published,
-        ingredients: {
-          create: ingredients,
+      const existingCategory = await this.prisma.category.findUnique({
+        where: { id: categoryId },
+      });
+      if (!existingCategory) {
+        throw new NotFoundException(ERROR.ResourceNotFound);
+      }
+
+      const article = await this.prisma.article.create({
+        data: {
+          title,
+          description,
+          price,
+          imagePath: '/uploads/articles/' + file.filename,
+          categoryId,
+          published,
+          ingredients: {
+            create: ingredients.map((ingredient) => ({
+              quantity: ingredient.quantity,
+              ingredient: {
+                connect: { id: ingredient.ingredientId },
+              },
+            })),
+          },
         },
-      },
-    });
+      });
 
-    return article;
+      return article;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async findAll() {
