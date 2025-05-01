@@ -36,18 +36,18 @@ export class CategoryService {
     return categorys;
   }
 
-  async findOne(name: string) {
+  async findOne(id: number) {
     const existingCategory = await this.prisma.category.findUnique({
       where: {
-        name: name,
+        id: id,
       },
     });
     if (!existingCategory) {
-      throw new NotFoundException(`Category with ID ${name} not found`);
+      throw new NotFoundException(`Category with ID ${id} not found`);
     }
     return this.prisma.category.findUnique({
       where: {
-        name: name,
+        id: id,
       },
       include: {
         articles: true,
@@ -55,18 +55,18 @@ export class CategoryService {
     });
   }
 
-  async findOnePublish(name: string) {
+  async findOnePublish(id: number) {
     const existingCategory = await this.prisma.category.findUnique({
       where: {
-        name: name,
+        id: id,
       },
     });
     if (!existingCategory) {
-      throw new NotFoundException(`Category with ID ${name} not found`);
+      throw new NotFoundException(`Category with ID ${id} not found`);
     }
     return this.prisma.category.findUnique({
       where: {
-        name: name,
+        id: id,
       },
       include: {
         articles: {

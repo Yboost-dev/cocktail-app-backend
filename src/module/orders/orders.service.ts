@@ -103,9 +103,7 @@ export class OrdersService {
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto) {
-    const { email, token, status, paid, articles } = updateOrderDto;
-
-    // Rechercher la commande existante avec les articles et leurs prix historiques
+    // Rechercher la commande existante
     const existingOrder = await this.prisma.order.findUnique({
       where: { id },
       include: {
@@ -123,29 +121,43 @@ export class OrdersService {
       throw new NotFoundException(`Order with ID ${id} not found`);
     }
 
-    const articlesWithPrice = articles.map((article) => {
-      const existingArticle = existingOrder.articles.find(
-        (a) => a.articleId === article.articleId,
-      );
+    // Construire l'objet de données à mettre à jour
+    const updateData: any = {};
 
-      return {
-        articleId: article.articleId,
-        quantity: article.quantity,
-        articlePrice: existingArticle ? existingArticle.articlePrice : null,
+    // Ajouter uniquement les champs qui ont été fournis
+    if (updateOrderDto.email !== undefined) updateData.email = updateOrderDto.email;
+    if (updateOrderDto.token !== undefined) updateData.token = updateOrderDto.token;
+    if (updateOrderDto.status !== undefined) updateData.status = updateOrderDto.status;
+    if (updateOrderDto.paid !== undefined) updateData.paid = updateOrderDto.paid;
+    if (updateOrderDto.phone !== undefined) updateData.phone = updateOrderDto.phone;
+    if (updateOrderDto.table !== undefined) updateData.table = updateOrderDto.table;
+
+    // Traiter les articles seulement s'ils sont fournis
+    if (updateOrderDto.articles && updateOrderDto.articles.length > 0) {
+      const articlesWithPrice = updateOrderDto.articles.map((article) => {
+        const existingArticle = existingOrder.articles.find(
+          (a) => a.articleId === article.articleId,
+        );
+
+        return {
+          articleId: article.articleId,
+          quantity: article.quantity,
+          articlePrice: existingArticle ? existingArticle.articlePrice : null,
+        };
+      });
+
+      updateData.articles = {
+        deleteMany: {},
+        create: articlesWithPrice,
       };
-    });
+    }
 
+    // Effectuer la mise à jour
     return this.prisma.order.update({
       where: { id },
-      data: {
-        email,
-        token,
-        status,
-        paid,
-        articles: {
-          deleteMany: {},
-          create: articlesWithPrice,
-        },
+      data: updateData,
+      include: {
+        articles: true,
       },
     });
   }

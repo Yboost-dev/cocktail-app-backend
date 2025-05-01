@@ -57,7 +57,7 @@ export class CategoryController {
     return this.categoryService.findAll();
   }
 
-  @Get(':name')
+  @Get(':id')
   @UseGuards(OptionalJwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({
@@ -67,14 +67,14 @@ export class CategoryController {
   @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
   @ApiNotFoundResponse({ description: 'Category not found.' })
   @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
-  async findOne(@Param('name') name: string, @Req() req: any) {
+  async findOne(@Param('id') id: number, @Req() req: any) {
     const user = req.user;
     let articles;
 
     if (user) {
-      articles = await this.categoryService.findOne(name);
+      articles = await this.categoryService.findOne(id);
     } else {
-      articles = await this.categoryService.findOnePublish(name);
+      articles = await this.categoryService.findOnePublish(id);
     }
 
     return articles;
