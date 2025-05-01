@@ -55,6 +55,25 @@ export class CategoryService {
     });
   }
 
+  async findOneByName(name: string) {
+    const existingCategory = await this.prisma.category.findUnique({
+      where: {
+        name: name,
+      },
+    });
+    if (!existingCategory) {
+      throw new NotFoundException(`Category with name ${name} not found`);
+    }
+    return this.prisma.category.findUnique({
+      where: {
+        name: name,
+      },
+      include: {
+        articles: true,
+      },
+    });
+  }
+
   async findOnePublish(id: number) {
     const existingCategory = await this.prisma.category.findUnique({
       where: {
@@ -67,6 +86,29 @@ export class CategoryService {
     return this.prisma.category.findUnique({
       where: {
         id: id,
+      },
+      include: {
+        articles: {
+          where: {
+            published: true,
+          },
+        },
+      },
+    });
+  }
+
+  async findOnePublishByName(name: string) {
+    const existingCategory = await this.prisma.category.findUnique({
+      where: {
+        name: name,
+      },
+    });
+    if (!existingCategory) {
+      throw new NotFoundException(`Category with name ${name} not found`);
+    }
+    return this.prisma.category.findUnique({
+      where: {
+        name: name,
       },
       include: {
         articles: {

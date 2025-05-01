@@ -25,7 +25,6 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { CategoryEntity } from './entities/category.entity';
-import { IngredientEntity } from '../ingredients/entities/ingredient.entity';
 
 @Controller('category')
 export class CategoryController {
@@ -75,6 +74,29 @@ export class CategoryController {
       articles = await this.categoryService.findOne(id);
     } else {
       articles = await this.categoryService.findOnePublish(id);
+    }
+
+    return articles;
+  }
+
+  @Get('name/:name')
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: CategoryEntity,
+    description: 'Category successfully retrieved.',
+  })
+  @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
+  @ApiNotFoundResponse({ description: 'Category not found.' })
+  @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
+  async findOnebyName(@Param('name') name: string, @Req() req: any) {
+    const user = req.user;
+    let articles;
+
+    if (user) {
+      articles = await this.categoryService.findOneByName(name);
+    } else {
+      articles = await this.categoryService.findOnePublishByName(name);
     }
 
     return articles;
