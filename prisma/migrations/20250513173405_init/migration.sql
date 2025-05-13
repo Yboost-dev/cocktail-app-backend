@@ -49,6 +49,7 @@ CREATE TABLE "Order" (
     "phone" TEXT NOT NULL,
     "table" INTEGER NOT NULL,
     "token" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "status" TEXT NOT NULL,
     "paid" BOOLEAN NOT NULL,
 
