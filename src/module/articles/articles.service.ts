@@ -146,6 +146,8 @@ export class ArticlesService {
         },
       },
     });
+
+    console.log(article);
     if (article.length === 0) {
       throw new NotFoundException(`Article with ID ${id} not found`);
     }
@@ -172,6 +174,7 @@ export class ArticlesService {
                 unit: true,
               },
             },
+            quantity: true,
           },
         },
       },

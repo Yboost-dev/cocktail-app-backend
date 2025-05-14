@@ -40,7 +40,6 @@ export class IngredientsController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({
     type: IngredientEntity,
@@ -55,7 +54,6 @@ export class IngredientsController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({
     type: IngredientEntity,

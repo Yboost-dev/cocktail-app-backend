@@ -92,7 +92,7 @@ export class ArticlesController {
   @ApiOkResponse({
     type: [ArticleEntity],
     description: 'Articles successfully retrieved.',
-  }) // Modifié pour refléter un tableau d'articles
+  })
   @ApiUnauthorizedResponse({ description: 'JWT token is missing or invalid.' })
   @ApiNotFoundResponse({ description: 'No articles found.' })
   @ApiBadRequestResponse({ description: 'Validation failed for input data.' })
